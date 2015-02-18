@@ -1,4 +1,5 @@
 # Logstash Plugin
+## Atlassian Crowd REST API for user lookups
 
 This is a plugin for [Logstash](https://github.com/elasticsearch/logstash).
 
@@ -9,11 +10,15 @@ It is fully free and fully open source. The license is Apache 2.0, meaning you a
 Looks up user email based on username by making a REST API call to Atlassian Crowd server.
 
 Example Grok Filter for Atlassian Stash Auth Log.
+```
 STASH_CAPTCHA %{IP:proxy},%{IP:client} \| %{WORD:error} \| %{WORD:user1} \| %{INT:epoch_time} \| %{WORD:user2} \| (?<error>{%{QS}:%{QS},%{QS}:"For security reasons you must answer a CAPTCHA question."}) \| %{INT:minuteinday}x%{INT:reqnumsincerestart}x%{INT:concurrentreqs} \| %{DATA:something}
+```
 
 Logstash Config Stanza for using this filter should look like the following.
+
 The config should look like this:
 
+```
      filter {
        crowd {
                crowdURL       => "https:/crowd/rest/usermanagement/1/user"
@@ -23,7 +28,6 @@ The config should look like this:
                username_field => "user1"
        }
      }
-
 # username_field = Is a required field that points to the field in the event
 #                  before it's passed to this plugin that contains the
 #                  Key / Value pair needed to perform the Atlassian Crowd
@@ -41,3 +45,4 @@ The config should look like this:
 #                  since a default of 2 seconds is set below. If you want to change
 #                  the value you can do so in the logstash configuration file as
 #                  shown above.
+```
